@@ -1,6 +1,6 @@
 // Fonts preferences
-$sans-family: Roboto, sans-serif;
-$mono-family: Consolas, monospace;
+$sans-family: Source Code Pro, sans-serif;
+$mono-family: Source Code Pro, monospace;
 $base-font-size: 16px;
 $medium-font-size: $base-font-size * 0.938;
 $small-font-size: $base-font-size * 0.875;
@@ -24,15 +24,15 @@ $gray: #6b7886;
 $white: #fff;
 
 // Dark Colors
-$dark-text-base-color: #c7bebe;
-$dark-text-link-blue: #ff5277;
-$dark-text-link-blue-active: #ff2957;
+$dark-text-base-color: #30475E;
+$dark-text-link-blue: #F05454;
+$dark-text-link-blue-active: #757474;
 
-$dark-black: #131418;
-$dark-white: #eaeaea;
-$dark-light: #1b1d25;
-$dark-smoke: #4a4d56;
-$dark-gray: #767f87;
+$dark-black: #cbcbcb;
+$dark-white: #F05454;
+$dark-light: #ababab;
+$dark-smoke: #121314;
+$dark-gray: #686868;
 
 // Width of the content area
 $wide-size: 890px;

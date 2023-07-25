@@ -39,6 +39,21 @@
       font-size: 1.9em;
     }
   }
+
+  .header-address {
+    font-size: 1.3em;
+    line-height: 0.5;
+    margin-top: 5px;
+    margin-bottom: 15px;
+
+    &.center {
+      text-align: center;
+    }
+
+    @include media-query($on-mobile) {
+      font-size: 1.2em;
+    }
+  }
 }
 
 // Post meta
@@ -109,7 +124,9 @@
   }
 
   > p {
-    margin: 0;
+    margin: 15;
+    padding-left: 0px;   /* Increase this value to widen the left margin */
+    padding-right: 30px;
     padding-top: $spacing-full - 15;
     padding-bottom: $spacing-full - 15;
   }

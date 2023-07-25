@@ -190,8 +190,8 @@
   }
 
   .author-avatar {
-    width: 70px;
-    height: 70px;
+    width: 85px;
+    height: 85px;
     border-radius: 100%;
     user-select: none;
     background-color: $black;
@@ -350,7 +350,7 @@
     color: $text-base-color;
     -webkit-appearance: none;
     font-size: $base-font-size;
-    background-color: rgba(128, 128, 128, 0.1);
+    background-color: rgba(114, 112, 112, 0.376);
     border: 1px solid rgba(128, 128, 128, 0.1);
     &::-webkit-input-placeholder {
       color: #808080;

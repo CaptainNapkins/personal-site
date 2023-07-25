@@ -1,18 +1,12 @@
 ---
-title: Colophon
+title: About
 permalink: /about/
 layout: page
-excerpt: Hello peeps, I'm student of computer science from Banyuwangi, living in Jogjakarta. This blog for documentation about my programming journey, running on jekyll, hosting on netlify and using my own simple theme.
+excerpt: Purdue University Student. Living the dream.
 comments: false
 ---
 
-He's a student from Banyuwangi, living in Jogjakarta. the blog for documentation about his programming 🎒 journey, running on jekyll, hosting on [now.sh](http://now.sh) and using his own theme, he name it <a href="https://github.com/piharpi/jekyll-klise" target="_blank" rel="noopener">klisé</a>, he also loves to learning web technology; but he often forgot, that a reason why him doing the writing.
+Cybersecurity and Network Engineering student at Purdue University. Loves all things offensive security, networking, linux, and homelab related, and as a result, is always working on something. Enjoys competing in CTFs and is especially interested in the pwn category. Former Webmaster and current President of the [b01lers](https://b01lers.com) CTF Team. Former Team Leader and current Team Supervisor for [Boiler Gold Rush](https://www.purdue.edu/orientation/bgr/). Likes piña coladas and getting caught in the rain. 
 
-If you have a question about him or else, just send a letter to him.
+If you would like to get in contact with me, please see my [resume](/Resume.pdf) or send a homing pigeon. 
 
-You can [report](http://github.com/piharpi/jekyll-klise/issues/new) if there is an broken link(s) or somethings else.
-
-**may u needs ✨**
-
-- {{ site.author.email }}
-- github.com/{{ site.author.github }}
