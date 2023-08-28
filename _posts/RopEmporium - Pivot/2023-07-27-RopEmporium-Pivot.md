@@ -1,4 +1,12 @@
- Here is my write-up for Pivot! This is probably my second favorite challenge of the RopEmporium series. 
+---
+layout: post
+title:  "Rop Emporium - Pivot"
+date:   "2023-07-27"
+categories: [pwn, ropemporium]
+usemathjax: false
+---
+ 
+Here is my write-up for Pivot! This is probably my second favorite challenge of the RopEmporium series. 
 
 # Recon
 According to the challenge description we have to call the `ret2win()` function which resides in the shared library given to us called `libpivot.so`. The problem is PIE is enabled on `libpivot.so`. This means that even though it is accessible at runtime, we have no idea where `ret2win()` will be located in order to call it. Somehow we must leak a value in `libpivot.so` at runtime, calculate the base address of `libpivot.so` and then find the address at runtime of `ret2win()`. And it looks like there is one such function that will allow us to do just that. 

@@ -6,7 +6,7 @@ tags: [pwn, ropemporium]
 usemathjax: false
 ---
 # Intro
-After discovering how much I enjoyed the pwn CTF category, I started looking into ways to improve my skills. The first thing that was immediately clear was just how expansive the category of binary exploitation is. From buffer overflows to heap exploitation, and everything in between, it was quite overwhelming at first. Not to mention I had very little familiarity with how computer architecture worked in the first place. As I worked to get my bearings, I discovered [https://ropemporium.com](https://ropemporium.com). This website contains eight challenges designed to teach the basics of a fundamental binary exploitation technique, Return Oriented Programming or ROP. My goal is to create a writeup of each ROP Emporium challenge every week for eight weeks. Before I get into the first challenge, I would like to give a shoutout to [CryptoCat](https://www.youtube.com/channel/UCEeuul0q7C8Zs5C8rc4REFQ) on YouTube. His videos  on these challenges helped me extensively, whether it was debugging a solution or further understanding why something worked the way it did, his help was invaluable. Without further ado, lets have a look at the first challenge, called `ret2win`. 
+After discovering how much I enjoyed the pwn CTF category, I started looking into ways to improve my skills. The first thing that was immediately clear was just how expansive the category of binary exploitation is. From buffer overflows to heap exploitation, and everything in between, it was quite overwhelming at first. Not to mention I had very little familiarity with how computer architecture worked in the first place. As I worked to get my bearings, I discovered [https://ropemporium.com](https://ropemporium.com). This website contains eight challenges designed to teach the basics of a fundamental binary exploitation technique, Return Oriented Programming or ROP. Before I get into the first challenge, I would like to give a shoutout to [CryptoCat](https://www.youtube.com/channel/UCEeuul0q7C8Zs5C8rc4REFQ) on YouTube. His videos  on these challenges helped me extensively, whether it was debugging a solution or further understanding why something worked the way it did, their help was invaluable. Without further ado, lets have a look at the first challenge, called `ret2win`. 
 
 # Recon
 When we click on the challenge on the website, we are presented with a little introduction and some download links for various versions of the challenge. We will  solving the `x86-64` bit version in this writeup. Once the file is downloaded, we can unzip it and do some recon on the binary which is called `ret2win`. We will use a tool called `checksec`, which will analyze the binary for us to view some of its protections.
@@ -117,7 +117,6 @@ offset = 40
 
 ret2win = 0x400756
 
-rop_gadget = 0x000000000040053e
 payload = flat([
 	offset * b'A',
 	ret2win_func
@@ -134,6 +133,6 @@ Once we run this script, we should get the flag!
 
 And we do! 
 
-This was the first of the ROP Emporium challenges. Like I mentioned previously, I plan on writing up one challenge per week. As I go I will phase out things I covered in previous writeups to avoid redundancy. These challenges were very fun to solve and really helped me learn more about binary exploitation. Hope you enjoyed! 
+This was the first of the ROP Emporium challenges. These challenges were very fun to solve and really helped me learn more about binary exploitation. Hope you enjoyed! 
 
 

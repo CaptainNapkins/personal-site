@@ -1,11 +1,19 @@
-The write-ups for these couple challenges are quite late (this CTF happened from April 21 to April 23 2023) however I have decided it is time to start a blog documenting my CTF write-ups. 
+---
+layout: post
+title:  "SpaceHeroesCTF 2023"
+date:   "2023-06-23"
+categories: [ctf, pwn]
+usemathjax: false
+---
+
+The write-ups for these couple challenges are quite late (this CTF happened from April 21 to April 23 2023), however, I have decided it is time to start a blog documenting my CTF write-ups. 
 
 The SpaceHeroes CTF put on by FITSEC over at Florida Tech was a really fun CTF and I am happy that I contributed the solve to `Engine Failure`. `Cardassian Targeting System II` was originally solved by another member of my team and I decided to revisit it and solve it myself **a few weeks after the competition ended.** 
 
 Without further ado, let's hop in.
 
 # "Engine Failure" | Category: Pwn
-From the author, we are given a binary and a  glibc library `libc.so.6` file to download. The appearance of a libc file suggests that we might have to perform a return to libc attack to call a shell. But first, let's have a look at some of the protections on the binary. Checksec can be used to view any protections that the binary was compiled with. 
+From the author, we are given a binary and a  glibc library `libc.so.6` file to download. The appearance of a libc file suggests that we might have to perform a return to libc attack to spawn a shell. But first, let's have a look at some of the protections on the binary. Checksec can be used to view any protections that the binary was compiled with. 
 
 ![](checksec-output-ef.png)
 
@@ -74,7 +82,7 @@ This is very helpful because we can grab the offset of the `puts()` function fro
 
 So let's stop here and see what we've got so far. We can get a libc leak to find the base of libc at runtime and we have control over program execution via a buffer overflow. The exploit will be something like this; grab the `puts()` address, calculate the base of libc, overflow the buffer to gain control of the instruction pointer and make it point to the address of `system()` with a pointer to the string `/bin/sh` as the first argument. This string can be found in the libc library we are given and can be easily grabbed since we'll have the base address. Most of this can be automated with pwntools, but let's have a look at how we can ensure `/bin/sh` is the first argument when `system()` is called. 
 
-Because x86_64 calling conventions dictate that the the first argument must be stored in the RDI register when a function is called, we must get `/bin/sh` into the RDI register. This can be done with something called a ROP gadget. Specifically something like  `pop rdi; ret`. ROP gadgets can be found using a tool called ROPGadget. A search doesn't yield any ROP gadgets in the program itself, but we can look in the libc library we are provided. 
+Because x86_64 calling conventions dictate that the the first argument must be stored in the RDI register when a function is called, we must get `/bin/sh` into the RDI register. This can be done with something called a ROP gadget. Specifically something like  `pop rdi; ret`. ROP gadgets can be found using a tool called ROPGadget. A search doesn't yield any useful ROP gadgets in the program itself, but we can look in the libc library we are provided. 
 
 ```bash
 ROPGadget --binary libc.so.6 | grep "pop rdi"
