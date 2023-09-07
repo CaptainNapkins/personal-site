@@ -6,7 +6,7 @@ categories: [ctf, pwn]
 usemathjax: false
 ---
 
-The write-ups for these couple challenges are quite late (this CTF happened from April 21 to April 23 2023), however, I have decided it is time to start a blog documenting my CTF write-ups. 
+The write-ups for these couple challenges are quite late (this CTF happened from April 21 to April 23 2023), however, I wanted to start a blog documenting my CTF write-ups. 
 
 The SpaceHeroes CTF put on by FITSEC over at Florida Tech was a really fun CTF and I am happy that I contributed the solve to `Engine Failure`. `Cardassian Targeting System II` was originally solved by another member of my team and I decided to revisit it and solve it myself **a few weeks after the competition ended.** 
 
@@ -333,10 +333,7 @@ break *performAction
 """
 # pwnlib.gdb.attach(p, gdb_script)
 
-# p.sendline(b'urmom')
-# Libc leak @ target 13 (__libc_start_main + 243)
-# PIE leak @ target -1 (If one gadget works, not needed)
-# performAction ret addr to overwrite is target -3 
+# p.sendline(b'bruhwhat')
 
 def print_target(target):
     p.sendline(b'4')
