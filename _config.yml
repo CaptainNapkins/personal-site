@@ -9,11 +9,12 @@ repo: https://github.com/piharpi/jekyll-klise # site repo [optional]
 mode: dark # default theme "dark" | "light"
 # "I enjoy talking to you. Your mind appeals to me. It resembles my own mind except that you happen to be insane."
 # "Existence is beautiful, if you let it be. Life is not a question. There does not need to be an answer."
+# "That's hamdia bro"
 # Profile settings
 author:
   name: Gabriel Samide # author name
   bio: >- # tell to the world
-    <em>"That's hamdia bro"</em>
+    <em>"Doors and corners, kid"</em>
   username: username # general username
   github: github_username # github username
   twitter: twitter_username # twitter username
