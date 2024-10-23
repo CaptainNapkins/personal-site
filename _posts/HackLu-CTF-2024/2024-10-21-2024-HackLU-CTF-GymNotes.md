@@ -334,6 +334,8 @@ the memory layout around that pointer. You can see the ascii `\x61`, the shellco
 
 ![](final_exp.png)
 
-And that should give us a shell! 
+And that should give us a shell!
+
+`flag{D1d_y0u_G3T_y0Ur_d00R_b4Ck?}`
 
 Twas a fun challenge and learned a bit as well! 
