@@ -2,7 +2,7 @@
 title: About
 permalink: /about/
 layout: page
-excerpt: Purdue University Student. Living the dream.
+excerpt: Engineer. Living the dream.
 comments: false
 ---
 
